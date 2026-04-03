@@ -1,26 +1,242 @@
 @import "tailwindcss";
 
+/* 
+  ========================================
+   AETHER ENTERPRISE DESIGN SYSTEM COLORS
+  ========================================
+  Creative North Star: "Precision Luminescence"
+  Color Mode: DARK
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Core Basics */
+  --background: #080E1D; /* "Void" - Nền không gian sâu thẳm */
+  --foreground: #dde2f8; /* Mapped từ on_background để dùng làm text mặc định */
+
+  /* Surface & Background Hierarchy (Phân mảnh không còn viền trắng đen) */
+  --surface-container-lowest: #080e1d; /* Dùng cho chiều sâu (Background depth) */
+  --surface-container-low: #151b2b; /* Dùng cho Section tiêu chuẩn */
+  --surface-container: #191f2f; /* Dùng cho các thẻ Card / Nội dung (Content containers) */
+  --surface-container-high: #242a3a; /* Elevated containers (các tầng cao) */
+  --surface-container-highest: #2f3445; /* Hover states / Active overlays / Nút nổi */
+  --surface: #0d1322;
+  --surface-dim: #0d1322;
+  --surface-bright: #33394a;
+  --surface-variant: #2f3445; /* Dành cho hiệu ứng Glassmorphism (80% opacity) */
+  --surface-tint: #ffb690; /* Electric Orange glow */
+
+  /* Primary (Action & Electric Orange Highlights) */
+  --primary: #F97316;
+  --primary-container: #f97316; /* Màu dải Linear CTAs */
+  --primary-fixed: #ffdbca;
+  --primary-fixed-dim: #ffb690;
+  
+  /* Secondary (Utility & Accents) */
+  --secondary: #b9c7e0;
+  --secondary-container: #3c4a5e;
+  --secondary-fixed: #d5e3fd;
+  --secondary-fixed-dim: #b9c7e0;
+  
+  /* Tertiary */
+  --tertiary: #ffb77a;
+  --tertiary-container: #de852a;
+  --tertiary-fixed: #ffdcc2;
+  --tertiary-fixed-dim: #ffb77a;
+
+  /* Error States */
+  --error: #ffb4ab;
+  --error-container: #93000a;
+
+  /* On-Colors (Màu text và Icon phía trên các lớp bề mặt tương ứng) */
+  --on-background: #dde2f8;
+  --on-surface: #dde2f8;
+  --on-surface-variant: #e0c0b1;
+  
+  --on-primary: #552100;
+  --on-primary-container: #FFFFFF;
+  --on-primary-fixed: #341100;
+  --on-primary-fixed-variant: #783200;
+  
+  --on-secondary: #233144;
+  --on-secondary-container: #abb9d2;
+  --on-secondary-fixed: #0d1c2f;
+  --on-secondary-fixed-variant: #3a485c;
+  
+  --on-tertiary: #4c2700;
+  --on-tertiary-container: #4f2900;
+  --on-tertiary-fixed: #2e1500;
+  --on-tertiary-fixed-variant: #6d3a00;
+  
+  --on-error: #690005;
+  --on-error-container: #ffdad6;
+
+  /* Inverse Colors */
+  --inverse-surface: #dde2f8;
+  --inverse-on-surface: #2a3040;
+  --inverse-primary: #9d4300;
+
+  /* Outlines & Borders (Nhắc nhở: Chỉ dùng viền ở 15% opacity theo rule No-Line) */
+  --outline: #a78b7d;
+  --outline-variant: #584237; /* Ghost border fallback */
+}
+
+:root.light {
+  color-scheme: light;
+  
+  /* Core Basics */
+  --background: #F1F5F9;
+  --foreground: #1E293B;
+
+  /* Surface & Background Hierarchy */
+  --surface-container-lowest: #FFFFFF;
+  --surface-container-low: #F8FAFC;
+  --surface-container: #FFFFFF;
+  --surface-container-high: #F8FAFC;
+  --surface-container-highest: #E2E8F0;
+  --surface: #FFFFFF;
+  --surface-dim: #F1F5F9;
+  --surface-bright: #FFFFFF;
+  --surface-variant: #F1F5F9;
+  --surface-tint: #F97316;
+
+  /* Primary */
+  --primary: #F97316;
+  --primary-container: #F97316;
+  --primary-fixed: #ffdbca;
+  --primary-fixed-dim: #F97316;
+  
+  /* Secondary */
+  --secondary: #64748B;
+  --secondary-container: #F1F5F9;
+  --secondary-fixed: #d5e3fd;
+  --secondary-fixed-dim: #b9c7e0;
+  
+  /* Tertiary */
+  --tertiary: #FF9F43;
+  --tertiary-container: #FED7AA;
+  --tertiary-fixed: #ffdcc2;
+  --tertiary-fixed-dim: #ffb77a;
+
+  /* Error States */
+  --error: #EF4444;
+  --error-container: #FEE2E2;
+
+  /* On-Colors */
+  --on-background: #1E293B;
+  --on-surface: #1E293B;
+  --on-surface-variant: #64748B;
+  
+  --on-primary: #FFFFFF;
+  --on-primary-container: #FFFFFF;
+  --on-primary-fixed: #341100;
+  --on-primary-fixed-variant: #783200;
+  
+  --on-secondary: #1E293B;
+  --on-secondary-container: #1E293B;
+  --on-secondary-fixed: #0d1c2f;
+  --on-secondary-fixed-variant: #3a485c;
+  
+  --on-tertiary: #FFFFFF;
+  --on-tertiary-container: #4f2900;
+  --on-tertiary-fixed: #2e1500;
+  --on-tertiary-fixed-variant: #6d3a00;
+  
+  --on-error: #FFFFFF;
+  --on-error-container: #93000a;
+
+  /* Inverse Colors */
+  --inverse-surface: #1E293B;
+  --inverse-on-surface: #F1F5F9;
+  --inverse-primary: #F97316;
+
+  /* Outlines & Borders */
+  --outline: #94A3B8;
+  --outline-variant: #E2E8F0;
 }
 
 @theme inline {
+  /* System Core (Mặc định Next.js / Tailwind v4) */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Ánh xạ biến sang Tailwind Utility classes 
+     Ví dụ dùng: bg-surface-lowest, text-on-surface, border-outline-variant ... 
+  */
+  --color-surface-lowest: var(--surface-container-lowest);
+  --color-surface-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-high: var(--surface-container-high);
+  --color-surface-highest: var(--surface-container-highest);
+  --color-surface-variant: var(--surface-variant);
+  --color-surface-tint: var(--surface-tint);
+
+  --color-primary: var(--primary);
+  --color-primary-container: var(--primary-container);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-container: var(--secondary-container);
+  
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+
+  --color-error: var(--error);
+  --color-error-container: var(--error-container);
+  
+  --color-on-background: var(--on-background);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  
+  --color-on-primary: var(--on-primary);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-on-secondary: var(--on-secondary);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  /* Kích hoạt cơ sở Dark Mode chung */
+  color-scheme: dark;
+}
+
+@layer utilities {
+  .shimmer-progress {
+      background: linear-gradient(90deg, rgba(249,115,22,1) 0%, rgba(255,182,144,1) 50%, rgba(249,115,22,1) 100%);
+      background-size: 200% 100%;
+  }
+
+  .light .shimmer-progress {
+      background: linear-gradient(90deg, rgba(249,115,22,1) 0%, rgba(255,159,67,1) 50%, rgba(249,115,22,1) 100%);
+  }
+
+  .breathing-green {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+      animation: pulse-green 2s infinite;
+  }
+
+  .glass-panel {
+      background: rgba(21, 27, 43, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .light .glass-panel {
+      background: #FFFFFF;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  }
+}
+
+@keyframes pulse-green {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
 }
