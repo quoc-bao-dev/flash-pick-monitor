@@ -1,7 +1,9 @@
 'use client';
 
+import { useLogoutMutation } from '@/service/auth';
 import {
   Bell,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Grid,
@@ -11,6 +13,7 @@ import {
   Monitor,
   Moon,
   Network,
+  Puzzle,
   Rows3,
   Search,
   Settings,
@@ -18,6 +21,7 @@ import {
   Sun,
   Terminal,
   User,
+  Zap,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -26,7 +30,25 @@ import React, { useEffect, useState } from 'react';
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isCrawlerOpen, setIsCrawlerOpen] = useState(false);
   const pathname = usePathname();
+
+  const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation();
+
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        window.location.href = '/login';
+      },
+    });
+  };
+
+  // Auto-expand Crawler if a sub-item is active
+  useEffect(() => {
+    if (pathname === '/extensions' || pathname === '/crawl-sessions') {
+      setIsCrawlerOpen(true);
+    }
+  }, [pathname]);
 
   useEffect(() => {
     // Check initial scheme
@@ -38,12 +60,41 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       const newMode = !prev;
       if (newMode) {
         document.documentElement.classList.remove('light');
+        document.documentElement.classList.add('dark');
+        document.body.style.colorScheme = 'dark';
       } else {
         document.documentElement.classList.add('light');
+        document.documentElement.classList.remove('dark');
+        document.body.style.colorScheme = 'light';
       }
       return newMode;
     });
   };
+
+  interface NavItem {
+    icon: React.ElementType;
+    label: string;
+    href?: string;
+    isGroup?: boolean;
+    children?: { icon: React.ElementType; label: string; href: string }[];
+  }
+
+  const navItems: NavItem[] = [
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
+    { icon: Monitor, label: 'Workers', href: '/workers' },
+    {
+      label: 'Crawler',
+      icon: Zap,
+      isGroup: true,
+      children: [
+        { icon: Puzzle, label: 'Extensions', href: '/extensions' },
+        { icon: Rows3, label: 'Sessions', href: '/crawl-sessions' },
+      ],
+    },
+    { icon: Shield, label: 'Security', href: '#' },
+    { icon: Terminal, label: 'Logs', href: '#' },
+    { icon: Settings, label: 'Settings', href: '#' },
+  ];
 
   return (
     <div className="bg-background text-on-surface font-body selection:bg-primary/30 min-h-screen">
@@ -70,19 +121,66 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
         <nav className="flex-1 overflow-x-hidden">
           <div className="flex flex-col">
-            {[
-              { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
-              { icon: Monitor,         label: 'Workers',   href: '/workers' },
-              { icon: Rows3,           label: 'Sessions',  href: '/crawl-sessions' },
-              { icon: Shield,          label: 'Security',  href: '#' },
-              { icon: Terminal,        label: 'Logs',      href: '#' },
-              { icon: Settings,        label: 'Settings',  href: '#' },
-            ].map((item) => {
+            {navItems.map((item) => {
+              if (item.isGroup) {
+                const isGroupActive = item.children?.some((child) => pathname === child.href);
+                return (
+                  <div key={item.label} className="flex flex-col">
+                    <button
+                      onClick={() => setIsCrawlerOpen(!isCrawlerOpen)}
+                      className={`flex items-center transition-all duration-300 ease-in-out font-headline uppercase tracking-widest text-xs font-bold w-full
+                        ${
+                          isGroupActive
+                            ? 'text-[#f97316] bg-[#f97316]/5'
+                            : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
+                        }
+                        ${isExpanded ? 'px-8 py-3' : 'justify-center mx-3 my-1 py-3 rounded-xl'}
+                      `}
+                    >
+                      <item.icon size={20} className="shrink-0" />
+                      {isExpanded && (
+                        <div className="flex items-center justify-between w-full ml-4">
+                          <span className="whitespace-nowrap">{item.label}</span>
+                          <ChevronDown
+                            size={14}
+                            className={`transition-transform duration-300 ${isCrawlerOpen ? 'rotate-180' : ''}`}
+                          />
+                        </div>
+                      )}
+                    </button>
+
+                    {/* Sub-items */}
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        isCrawlerOpen && isExpanded ? 'max-h-40 opacity-100 mb-2' : 'max-h-0 opacity-0'
+                      }`}
+                    >
+                      {item.children?.map((child) => {
+                        const isChildActive = pathname === child.href;
+                        return (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            className={`flex items-center pl-14 py-2.5 transition-all duration-200 font-headline uppercase tracking-widest text-[10px] font-bold
+                              ${isChildActive ? 'text-[#f97316]' : 'text-slate-500 hover:text-slate-300'}
+                            `}
+                          >
+                            <child.icon size={16} className="mr-3" />
+                            <span>{child.label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              }
+
               const isActive = pathname === item.href;
+              const href = item.href || '#';
               return (
                 <Link
-                  key={item.href}
-                  href={item.href}
+                  key={href}
+                  href={href}
                   className={`flex items-center transition-all duration-300 ease-in-out font-headline uppercase tracking-widest text-xs font-bold
                     ${
                       isActive
@@ -91,7 +189,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                     }`}
                 >
                   <item.icon size={20} className="shrink-0" />
-                  {isExpanded && <span className="whitespace-nowrap">{item.label}</span>}
+                  {isExpanded && <span className="ml-4 whitespace-nowrap">{item.label}</span>}
                 </Link>
               );
             })}
@@ -106,10 +204,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             {isExpanded && <span className="whitespace-nowrap">Support</span>}
           </button>
           <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
             className={`flex items-center text-slate-500 hover:text-slate-200 transition-all duration-300 ease-in-out font-headline uppercase tracking-widest text-xs font-bold ${isExpanded ? 'space-x-4 px-8 py-3 hover:bg-white/5' : 'justify-center mx-3 my-1 py-3 rounded-xl hover:bg-white/10'}`}
           >
             <LogOut size={20} className="shrink-0" />
-            {isExpanded && <span className="whitespace-nowrap">Logout</span>}
+            {isExpanded && <span className="whitespace-nowrap">{isLoggingOut ? 'Logging out...' : 'Logout'}</span>}
           </button>
 
           <div className="flex items-center justify-center pt-8">
@@ -142,22 +242,19 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          {/* <button
+          <button
             onClick={toggleTheme}
             className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
             title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button> */}
+          </button>
           <button className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all">
             <Bell size={20} />
           </button>
           <button className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all">
             <Grid size={20} />
           </button>
-          {/* <button className="bg-[#f97316] text-white px-5 py-1.5 rounded-full font-medium text-sm hover:opacity-90 transition-opacity">
-            Deploy
-          </button> */}
           <div className="w-8 h-8 rounded-full bg-surface-container-highest border border-white/10 flex items-center justify-center overflow-hidden">
             <div className="w-full h-full bg-slate-700" title="Admin User" />
           </div>

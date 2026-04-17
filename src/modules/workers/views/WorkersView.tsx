@@ -2,9 +2,22 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import {
-  Monitor, MoreVertical, Plus, RotateCcw, Settings, Power,
-  Video, VideoOff, Maximize2, Minimize2, HandMetal,
-  Thermometer, Clock, Cpu, X, Activity,
+  Monitor,
+  MoreVertical,
+  Plus,
+  RotateCcw,
+  Settings,
+  Power,
+  Video,
+  VideoOff,
+  Maximize2,
+  Minimize2,
+  HandMetal,
+  Thermometer,
+  Clock,
+  Cpu,
+  X,
+  Activity,
 } from 'lucide-react';
 import { Button } from '@/common/components/ui/Button';
 import { Badge } from '@/common/components/ui/Badge';
@@ -27,8 +40,12 @@ function WorkerRowActions({ worker }: { worker: Worker }) {
   if (isOffline) {
     return (
       <div className="flex justify-end gap-2">
-        <Button variant="ghost" size="icon" title="Power On"
-          className="text-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-400">
+        <Button
+          variant="ghost"
+          size="icon"
+          title="Power On"
+          className="text-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-400"
+        >
           <Power size={16} />
         </Button>
       </div>
@@ -61,7 +78,8 @@ function WorkerRowActions({ worker }: { worker: Worker }) {
 
 // ─── Stream Panel ─────────────────────────────────────────────────────────────
 function LiveStreamPanel({ worker, onClose }: { worker: Worker; onClose: () => void }) {
-  const cpuColor = worker.resources.cpuPercent >= 80 ? 'error' : worker.resources.cpuPercent >= 50 ? 'warning' : 'success';
+  const cpuColor =
+    worker.resources.cpuPercent >= 80 ? 'error' : worker.resources.cpuPercent >= 50 ? 'warning' : 'success';
   const tempColor = (worker.tempCelsius ?? 0) >= 75 ? 'text-red-400' : 'text-orange-400';
 
   // ── Fullscreen ──
@@ -93,14 +111,12 @@ function LiveStreamPanel({ worker, onClose }: { worker: Worker; onClose: () => v
         <div>
           <div className="flex items-center gap-2">
             <Video size={14} className="text-orange-500" />
-            <h3 className="font-headline font-bold text-sm text-white">
-              {worker.name}
-            </h3>
-            <Badge variant="active" size="sm" dot pulse>Live</Badge>
+            <h3 className="font-headline font-bold text-sm text-white">{worker.name}</h3>
+            <Badge variant="active" size="sm" dot pulse>
+              Live
+            </Badge>
           </div>
-          <p className="text-[10px] text-orange-500/70 font-mono mt-0.5 tracking-tight">
-            LATENCY: 12ms | 1080p 60FPS
-          </p>
+          <p className="text-[10px] text-orange-500/70 font-mono mt-0.5 tracking-tight">LATENCY: 12ms | 1080p 60FPS</p>
         </div>
         <Button variant="icon-ghost" size="icon" onClick={onClose}>
           <X size={16} />
@@ -147,9 +163,7 @@ function LiveStreamPanel({ worker, onClose }: { worker: Worker; onClose: () => v
           )}
         >
           <div className="bg-zinc-950/80 backdrop-blur-md border border-zinc-800 px-3 py-1.5 rounded-lg">
-            <span className="text-[10px] font-mono text-zinc-400">
-              SESSION: {worker.sessionId ?? '—'}
-            </span>
+            <span className="text-[10px] font-mono text-zinc-400">SESSION: {worker.sessionId ?? '—'}</span>
           </div>
           {/* Fullscreen toggle */}
           <Button
@@ -169,7 +183,9 @@ function LiveStreamPanel({ worker, onClose }: { worker: Worker; onClose: () => v
             <div className="flex items-center gap-2 bg-zinc-950/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-lg">
               <Video size={12} className="text-orange-500" />
               <span className="font-headline font-bold text-sm text-white">{worker.name}</span>
-              <Badge variant="active" size="sm" dot pulse>Live</Badge>
+              <Badge variant="active" size="sm" dot pulse>
+                Live
+              </Badge>
             </div>
             <div className="bg-zinc-950/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-lg">
               <span className="text-[10px] font-mono text-orange-400">LATENCY: 12ms | 1080p 60FPS</span>
@@ -199,20 +215,13 @@ function LiveStreamPanel({ worker, onClose }: { worker: Worker; onClose: () => v
             <p className="text-[9px] text-zinc-500 uppercase tracking-wide mb-1 flex items-center gap-1">
               <Cpu size={10} /> Process
             </p>
-            <p className="font-headline font-bold text-sm text-white truncate">
-              {worker.activeProcess ?? '—'}
-            </p>
+            <p className="font-headline font-bold text-sm text-white truncate">{worker.activeProcess ?? '—'}</p>
           </div>
         </div>
 
         {/* Resource bars detail */}
         <div className="space-y-2">
-          <ProgressBar
-            label="CPU"
-            value={worker.resources.cpuPercent}
-            color={cpuColor}
-            height="sm"
-          />
+          <ProgressBar label="CPU" value={worker.resources.cpuPercent} color={cpuColor} height="sm" />
           <ProgressBar
             label="Memory"
             value={worker.resources.memPercent}
@@ -251,8 +260,11 @@ function LiveStreamPanel({ worker, onClose }: { worker: Worker; onClose: () => v
           >
             {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
           </Button>
-          <Button variant="icon-ghost" size="icon"
-            className="bg-zinc-900 border border-zinc-800 rounded-xl hover:border-orange-500/50">
+          <Button
+            variant="icon-ghost"
+            size="icon"
+            className="bg-zinc-900 border border-zinc-800 rounded-xl hover:border-orange-500/50"
+          >
             <Settings size={16} />
           </Button>
         </div>
@@ -266,12 +278,11 @@ export function WorkersView() {
   const [selectedWorker, setSelectedWorker] = useState<Worker>(MOCK_WORKERS[0]);
 
   const onlineCount = MOCK_WORKERS.filter((w) => w.status !== 'OFFLINE').length;
-  const busyCount   = MOCK_WORKERS.filter((w) => w.status === 'BUSY').length;
+  const busyCount = MOCK_WORKERS.filter((w) => w.status === 'BUSY').length;
   const offlineCount = MOCK_WORKERS.filter((w) => w.status === 'OFFLINE').length;
 
   return (
     <div className="flex flex-col gap-6">
-
       {/* ─ Page header + metrics ─ */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <SectionHeader
@@ -281,7 +292,9 @@ export function WorkersView() {
           size="lg"
         />
         <div className="flex gap-2 shrink-0">
-          <Button variant="secondary" size="md">Export Logs</Button>
+          <Button variant="secondary" size="md">
+            Export Logs
+          </Button>
           <Button variant="primary" size="md">
             <Plus size={16} />
             Add Worker
@@ -292,13 +305,12 @@ export function WorkersView() {
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-4">
         <MetricCard label="Online" value={onlineCount} trendDir="up" trend={`${onlineCount}/${MOCK_WORKERS.length}`} />
-        <MetricCard label="Busy"   value={busyCount}   trendDir="neutral" />
+        <MetricCard label="Busy" value={busyCount} trendDir="neutral" />
         <MetricCard label="Offline" value={offlineCount} trendDir={offlineCount > 0 ? 'down' : 'neutral'} invertTrend />
       </div>
 
       {/* ─ Table + Panel ─ */}
       <div className="flex flex-col lg:flex-row gap-6 min-h-[calc(100vh-18rem)]">
-
         {/* Table */}
         <section className="flex-1 glass-panel rounded-2xl overflow-hidden border border-white/5 flex flex-col">
           <div className="overflow-x-auto flex-1">
@@ -321,9 +333,7 @@ export function WorkersView() {
                       onClick={() => setSelectedWorker(worker)}
                       className={cn(
                         'transition-colors cursor-pointer group',
-                        isSelected
-                          ? 'bg-orange-500/10 border-l-2 border-l-orange-500'
-                          : 'hover:bg-white/5',
+                        isSelected ? 'bg-orange-500/10 border-l-2 border-l-orange-500' : 'hover:bg-white/5',
                         worker.status === 'OFFLINE' && 'opacity-60',
                       )}
                     >
@@ -336,7 +346,12 @@ export function WorkersView() {
                             <Monitor size={14} />
                           </IconBox>
                           <div>
-                            <p className={cn('font-headline font-bold text-sm', worker.status === 'OFFLINE' ? 'text-zinc-500' : 'text-white')}>
+                            <p
+                              className={cn(
+                                'font-headline font-bold text-sm',
+                                worker.status === 'OFFLINE' ? 'text-zinc-500' : 'text-on-surface',
+                              )}
+                            >
                               {worker.name}
                             </p>
                             {worker.activeProcess && (
@@ -376,10 +391,7 @@ export function WorkersView() {
 
         {/* Live Stream Panel */}
         <aside className="w-full lg:w-[360px] xl:w-[400px] shrink-0 flex flex-col">
-          <LiveStreamPanel
-            worker={selectedWorker}
-            onClose={() => {}}
-          />
+          <LiveStreamPanel worker={selectedWorker} onClose={() => {}} />
         </aside>
       </div>
     </div>

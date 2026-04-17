@@ -3,18 +3,15 @@ import { cn } from '@/common/utils/cn';
 import React from 'react';
 
 // ─── Wrapper variant ──────────────────────────────────────────────────────────
-const inputWrapperVariants = cva(
-  'relative flex items-center group',
-  {
-    variants: {
-      variant: {
-        default: '',
-        pill:    '',
-      },
+const inputWrapperVariants = cva('relative flex items-center group', {
+  variants: {
+    variant: {
+      default: '',
+      pill: '',
     },
-    defaultVariants: { variant: 'default' },
   },
-);
+  defaultVariants: { variant: 'default' },
+});
 
 // ─── Input field variant ──────────────────────────────────────────────────────
 const inputVariants = cva(
@@ -30,14 +27,14 @@ const inputVariants = cva(
     variants: {
       variant: {
         default: 'rounded-xl',
-        pill:    'rounded-full',
+        pill: 'rounded-full',
       },
       hasLeadingIcon: {
-        true:  'pl-11',
+        true: 'pl-11',
         false: 'pl-4',
       },
       hasTrailingIcon: {
-        true:  'pr-11',
+        true: 'pr-11',
         false: 'pr-4',
       },
       size: {
@@ -57,7 +54,8 @@ const inputVariants = cva(
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
+  extends
+    Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
     Pick<VariantProps<typeof inputVariants>, 'variant' | 'size'> {
   /** Icon rendered on the left inside the input */
   leadingIcon?: React.ReactNode;
@@ -117,6 +115,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={cn(
+              'bg-surface-container-high',
               inputVariants({
                 variant,
                 size,
@@ -130,17 +129,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           />
 
           {/* Trailing icon (can be interactive button) */}
-          {trailingIcon && (
-            <div className="absolute right-4 text-slate-500 flex items-center">
-              {trailingIcon}
-            </div>
-          )}
+          {trailingIcon && <div className="absolute right-4 text-slate-500 flex items-center">{trailingIcon}</div>}
         </div>
 
         {/* Error message */}
-        {error && (
-          <p className="text-[11px] font-medium text-red-400 ml-1">{error}</p>
-        )}
+        {error && <p className="text-[11px] font-medium text-red-400 ml-1">{error}</p>}
       </div>
     );
   },

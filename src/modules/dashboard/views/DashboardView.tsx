@@ -20,6 +20,7 @@ import { StatusDot } from '@/common/components/ui/StatusDot';
 import { IconBox } from '@/common/components/ui/IconBox';
 import { LogStream, type LogEntry } from '@/common/components/ui/LogStream';
 import { BarChart } from '@/common/components/ui/BarChart';
+import { cn } from '@/common/utils/cn';
 
 export function DashboardView() {
   return (
@@ -39,7 +40,7 @@ function DashboardHeader() {
   return (
     <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div>
-        <h1 className="font-headline text-4xl font-bold tracking-tight text-white mb-2">
+        <h1 className="font-headline text-4xl font-bold tracking-tight text-on-background mb-2">
           Operational <span className="text-primary">Dashboard</span>
         </h1>
         <p className="text-secondary font-medium tracking-wide">V2.4.0 • SYSTEM UPTIME: 99.98%</p>
@@ -79,7 +80,7 @@ function WorkerManagement() {
                 <Terminal size={20} />
               </IconBox>
               <div>
-                <h3 className="font-bold text-white leading-tight">WORKER_ALPHA_01</h3>
+                <h3 className="font-bold text-on-surface leading-tight">WORKER_ALPHA_01</h3>
                 <p className="text-xs text-slate-500 font-mono">IP: 192.168.1.104</p>
               </div>
             </div>
@@ -125,7 +126,7 @@ function WorkerManagement() {
                 <Server size={20} />
               </IconBox>
               <div>
-                <h3 className="font-bold text-white leading-tight">WORKER_BETA_09</h3>
+                <h3 className="font-bold text-on-surface leading-tight">WORKER_BETA_09</h3>
                 <p className="text-xs text-slate-500 font-mono">IP: 192.168.1.105</p>
               </div>
             </div>
@@ -152,15 +153,15 @@ function WorkerManagement() {
 }
 
 const THROUGHPUT_DATA = [
-  { value: 48,  label: '14:00' },
-  { value: 64,  label: '14:01' },
-  { value: 80,  label: '14:02' },
+  { value: 48, label: '14:00' },
+  { value: 64, label: '14:01' },
+  { value: 80, label: '14:02' },
   { value: 112, label: '14:03' },
-  { value: 96,  label: '14:04' },
+  { value: 96, label: '14:04' },
   { value: 128, label: '14:05' },
   { value: 112, label: '14:06' },
-  { value: 64,  label: '14:07' },
-  { value: 40,  label: '14:08' },
+  { value: 64, label: '14:07' },
+  { value: 40, label: '14:08' },
 ];
 
 function NetworkThroughput() {
@@ -174,9 +175,8 @@ function NetworkThroughput() {
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Global Ingress</p>
             <span className="text-green-400 text-xs font-mono font-bold">+12.4%</span>
           </div>
-          <div className="font-headline text-5xl font-bold text-white tracking-tighter mb-1">
-            842.<span className="text-primary">4</span>{' '}
-            <span className="text-sm font-medium text-slate-500">MB/s</span>
+          <div className="font-headline text-5xl font-bold text-on-surface tracking-tighter mb-1">
+            842.<span className="text-primary">4</span> <span className="text-sm font-medium text-slate-500">MB/s</span>
           </div>
         </div>
         <BarChart
@@ -191,6 +191,39 @@ function NetworkThroughput() {
     </section>
   );
 }
+
+const SESSION_MOCK_DATA = [
+  {
+    id: 'SID-88210-X',
+    resource: 'market_index_bloomberg',
+    status: 'Crawling',
+    statusVariant: 'info' as const,
+    progress: 84,
+    items: '142,903',
+    dotColor: 'blue' as const,
+    isAnimated: true,
+  },
+  {
+    id: 'SID-88211-Y',
+    resource: 'social_sentiment_stream',
+    status: 'Verifying',
+    statusVariant: 'success' as const,
+    progress: 100,
+    items: '12,442',
+    dotColor: 'blue' as const,
+    isAnimated: false,
+  },
+  {
+    id: 'SID-88212-Z',
+    resource: 'crypto_exchange_orderbook',
+    status: 'Stalled',
+    statusVariant: 'error' as const,
+    progress: 12,
+    items: '2,105',
+    dotColor: 'orange' as const,
+    isAnimated: false,
+  },
+];
 
 function CrawlSessions() {
   return (
@@ -230,75 +263,41 @@ function CrawlSessions() {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5 text-sm">
-            <tr className="hover:bg-white/5 transition-colors group">
-              <td className="px-6 py-5 font-mono text-primary">SID-88210-X</td>
-              <td className="px-6 py-5">
-                <div className="flex items-center gap-2">
-                  <StatusDot color="blue" />
-                  <span className="text-white font-medium">market_index_bloomberg</span>
-                </div>
-              </td>
-              <td className="px-6 py-5">
-                <div className="w-48 space-y-1">
-                  <Badge variant="info" size="sm">
-                    Crawling
-                  </Badge>
-                </div>
-              </td>
-              <td className="px-6 py-5">
-                <div className="w-48 space-y-1">
-                  <ProgressBar value={84} color="info" animated showLabel={false} />
-                  <p className="text-[10px] text-right text-slate-500 font-mono">84%</p>
-                </div>
-              </td>
-              <td className="px-6 py-5 font-mono text-slate-400">142,903</td>
-            </tr>
-            <tr className="hover:bg-white/5 transition-colors group">
-              <td className="px-6 py-5 font-mono text-primary">SID-88211-Y</td>
-              <td className="px-6 py-5">
-                <div className="flex items-center gap-2">
-                  <StatusDot color="blue" />
-                  <span className="text-white font-medium">social_sentiment_stream</span>
-                </div>
-              </td>
-              <td className="px-6 py-5">
-                <div className="w-48 space-y-1">
-                  <Badge variant="success" size="sm">
-                    Verifying
-                  </Badge>
-                </div>
-              </td>
-              <td className="px-6 py-5">
-                <div className="w-48 space-y-1">
-                  <ProgressBar value={100} color="success" showLabel={false} />
-                  <p className="text-[10px] text-right text-slate-500 font-mono">100%</p>
-                </div>
-              </td>
-              <td className="px-6 py-5 font-mono text-slate-400">12,442</td>
-            </tr>
-            <tr className="hover:bg-white/5 transition-colors group">
-              <td className="px-6 py-5 font-mono text-primary">SID-88212-Z</td>
-              <td className="px-6 py-5">
-                <div className="flex items-center gap-2">
-                  <StatusDot color="orange" />
-                  <span className="text-white font-medium">crypto_exchange_orderbook</span>
-                </div>
-              </td>
-              <td className="px-6 py-5">
-                <div className="w-48 space-y-1">
-                  <Badge variant="error" size="sm">
-                    Stalled
-                  </Badge>
-                </div>
-              </td>
-              <td className="px-6 py-5">
-                <div className="w-48 space-y-1">
-                  <ProgressBar value={12} color="error" showLabel={false} />
-                  <p className="text-[10px] text-right text-red-400 font-mono">12%</p>
-                </div>
-              </td>
-              <td className="px-6 py-5 font-mono text-slate-400">2,105</td>
-            </tr>
+            {SESSION_MOCK_DATA.map((session) => (
+              <tr key={session.id} className="hover:bg-white/5 transition-colors group">
+                <td className="px-6 py-5 font-mono text-primary">{session.id}</td>
+                <td className="px-6 py-5">
+                  <div className="flex items-center gap-2">
+                    <StatusDot color={session.dotColor} />
+                    <span className="text-on-surface font-medium">{session.resource}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-5">
+                  <div className="w-32">
+                    <Badge variant={session.statusVariant} size="sm">
+                      {session.status}
+                    </Badge>
+                  </div>
+                </td>
+                <td className="px-6 py-5">
+                  <div className="w-48 space-y-1">
+                    <ProgressBar
+                      value={session.progress}
+                      color={session.statusVariant === 'success' ? 'success' : session.statusVariant === 'error' ? 'error' : 'info'}
+                      animated={session.isAnimated}
+                      showLabel={false}
+                    />
+                    <p className={cn(
+                      "text-[10px] text-right font-mono",
+                      session.statusVariant === 'error' ? "text-red-400" : "text-slate-500"
+                    )}>
+                      {session.progress}%
+                    </p>
+                  </div>
+                </td>
+                <td className="px-6 py-5 font-mono text-slate-400">{session.items}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

@@ -1,51 +1,82 @@
 'use client';
 
-import { AtSign, ArrowRight, Eye, EyeOff, Key, Shield, Terminal } from 'lucide-react';
-import { useState } from 'react';
 import { Button } from '@/common/components/ui/Button';
-import { Input } from '@/common/components/ui/Input';
 import { Checkbox } from '@/common/components/ui/Checkbox';
+import { Input } from '@/common/components/ui/Input';
+import { useLoginMutation } from '@/service/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ArrowRight, AtSign, Eye, EyeOff, Key, Terminal } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { loginSchema, type LoginFormData } from '../schema/login.schema';
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [maintainSession, setMaintainSession] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      maintainSession: true,
+    },
+  });
+
+  const { mutate: login, isPending: isLoading } = useLoginMutation();
+
+  const onSubmit = (data: LoginFormData) => {
+    setError(null);
+    login(data, {
+      onSuccess: () => {
+        window.location.href = '/';
+      },
+      onError: (err: any) => {
+        setError(err.response?.data?.message || err.message || 'Login failed');
+      },
+    });
   };
 
   return (
     <>
       {/* Brand Identity */}
       <div className="flex flex-col items-center mb-10">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-tertiary flex items-center justify-center shadow-[0_0_30px_rgba(249,115,22,0.3)] mb-6 group transition-transform hover:scale-105">
-          <Shield className="w-8 h-8 text-white" />
-        </div>
         <h1 className="font-headline text-3xl font-bold tracking-tighter text-on-surface uppercase text-center">
           FLASH PICK&nbsp;<span className="text-primary">MONITOR</span>
         </h1>
-        <p className="font-label text-slate-500 text-xs tracking-widest uppercase mt-2">
-          Precision Monitoring V2.4.0
-        </p>
+        <p className="font-label text-slate-500 text-xs tracking-widest uppercase mt-2">Precision Monitoring V2.4.0</p>
       </div>
 
       {/* Login Card */}
       <div className="glass-panel rounded-[3rem] p-8 lg:p-10 shadow-2xl">
-        <div className="mb-8">
+        <div className="mb-4">
           <h2 className="text-xl font-headline font-bold text-white">System Access</h2>
           <p className="text-slate-400 text-sm mt-1">Authenticate to enter secure environment</p>
         </div>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <Input
-            type="email"
-            variant="pill"
-            size="lg"
-            label="Terminal Identity"
-            placeholder="admin@kinetic.local"
-            required
-            leadingIcon={<AtSign className="w-5 h-5" />}
-          />
+        {error && (
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center">
+            {error}
+          </div>
+        )}
+
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <Input
+              type="email"
+              variant="pill"
+              size="lg"
+              label="Terminal Identity"
+              placeholder="admin@gmail.com"
+              leadingIcon={<AtSign className="w-5 h-5" />}
+              {...register('email')}
+            />
+            {errors.email && <p className="text-red-400 text-xs mt-1 ml-4">{errors.email.message}</p>}
+          </div>
 
           <div className="space-y-2">
             <div className="flex justify-between items-center px-1">
@@ -61,7 +92,6 @@ export function LoginForm() {
               variant="pill"
               size="lg"
               placeholder="••••••••••••"
-              required
               leadingIcon={<Key className="w-5 h-5" />}
               trailingIcon={
                 <button
@@ -73,22 +103,15 @@ export function LoginForm() {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               }
+              {...register('password')}
             />
+            {errors.password && <p className="text-red-400 text-xs mt-1 ml-4">{errors.password.message}</p>}
           </div>
 
-          <Checkbox
-            label="Maintain active session"
-            checked={maintainSession}
-            onChange={(e) => setMaintainSession(e.target.checked)}
-          />
+          <Checkbox label="Maintain active session" {...register('maintainSession')} />
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="pill"
-            className="w-full"
-          >
-            Secure Sign In
+          <Button type="submit" variant="primary" size="pill" className="w-full" disabled={isLoading}>
+            {isLoading ? 'Authenticating...' : 'Secure Sign In'}
             <ArrowRight className="w-5 h-5" />
           </Button>
         </form>

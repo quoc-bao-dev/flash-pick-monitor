@@ -4,23 +4,23 @@ import { cn } from '@/common/utils/cn';
 const trackColors: Record<string, string> = {
   primary: 'bg-primary',
   success: 'bg-emerald-500',
-  error:   'bg-red-500',
+  error: 'bg-red-500',
   warning: 'bg-orange-400',
-  info:    'bg-blue-400',
+  info: 'bg-blue-400',
 };
 
 const valueColors: Record<string, string> = {
   primary: 'text-primary',
   success: 'text-emerald-400',
-  error:   'text-red-400',
+  error: 'text-red-400',
   warning: 'text-orange-400',
-  info:    'text-blue-400',
+  info: 'text-blue-400',
 };
 
 export interface ProgressBarProps extends React.HTMLAttributes<HTMLDivElement> {
-  value: number;            // 0–100
+  value: number; // 0–100
   label?: string;
-  valueLabel?: string;      // custom label, defaults to `${value}%`
+  valueLabel?: string; // custom label, defaults to `${value}%`
   color?: 'primary' | 'success' | 'error' | 'warning' | 'info';
   /** Shimmer animation on the fill */
   animated?: boolean;
@@ -54,7 +54,7 @@ export function ProgressBar({
           <span className={textColor}>{valueLabel ?? `${clampedValue}%`}</span>
         </div>
       )}
-      <div className={cn('w-full bg-white/5 rounded-full overflow-hidden', heightMap[height])}>
+      <div className={cn('w-full bg-gray-500/10 rounded-full overflow-hidden', heightMap[height])}>
         <div
           className={cn(
             'h-full rounded-full transition-all duration-500',

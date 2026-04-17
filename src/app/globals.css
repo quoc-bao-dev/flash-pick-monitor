@@ -172,6 +172,10 @@
   --color-surface-variant: var(--surface-variant);
   --color-surface-tint: var(--surface-tint);
 
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-surface-container-low: var(--surface-container-low);
+
   --color-primary: var(--primary);
   --color-primary-container: var(--primary-container);
   
